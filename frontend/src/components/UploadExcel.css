@@ -1,0 +1,21 @@
+.upload-excel {
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .upload-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .file-label {
+    display: inline-block;
+    margin-top: 10px;
+    color: #333;
+    cursor: pointer;
+  }
+  

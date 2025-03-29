@@ -1,0 +1,101 @@
+/* Main container */
+.app-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light background color */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  color: #3b3b3b; /* Dark grey color */
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Fix content hiding behind navbar */
+.main-content {
+  margin-top: 50px; /* Adjust this if needed */
+  padding: 20px;
+}
+
+/* Upload Excel Section */
+.upload-excel {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Upload button */
+.upload-button {
+  padding: 12px 20px;
+  background-color: #007bff; /* Vibrant blue */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.upload-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: scale(1.05);
+}
+
+.file-label {
+  margin-top: 15px;
+  color: #007bff; /* Blue color */
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.file-label:hover {
+  color: #0056b3; /* Darker blue when hovered */
+}
+
+.file-info {
+  margin-top: 10px;
+  color: #666; /* Light grey text */
+  font-size: 14px;
+}
+
+/* Button for sending messages */
+button {
+  padding: 12px 25px;
+  background-color: #28a745; /* Green color */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+  background-color: #218838; /* Darker green on hover */
+  transform: scale(1.05);
+}
+
+button:disabled {
+  background-color: #cccccc; /* Greyed-out button when disabled */
+  cursor: not-allowed;
+}
+
+/* Error message */
+p {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+p.red-text {
+  color: red; /* Error messages in red */
+}
+
