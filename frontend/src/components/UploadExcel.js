@@ -5,33 +5,75 @@ import "./UploadExcel.css"
 const UploadExcel = ({ onPhoneNumbersLoaded }) => {
   const [fileName, setFileName] = useState("");
   const [phoneNumbers, setPhoneNumbers] = useState([]);
+  const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setFileName(file.name);
+    if (!file) return;
+
+    // Validate file type
+    if (!file.name.match(/\.(xls|xlsx)$/)) {
+      setStatus("error");
+      setErrorMessage("Please upload a valid Excel file (.xls or .xlsx)");
+      return;
+    }
+
+    setFileName(file.name);
+    setStatus("loading");
+
+    try {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "binary" });
+        try {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "binary" });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-        // Assuming the first sheet contains the phone numbers
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
+          // Extract phone numbers from the first column
+          const phoneNumbers = jsonData.map((row) => row["Phone Number"]).filter(Boolean);
+          
+          if (phoneNumbers.length === 0) {
+            throw new Error("No phone numbers found in the Excel file");
+          }
 
-        // Extract phone numbers from the first column (adjust if needed)
-        const phoneNumbers = jsonData.map((row) => row["Phone Number"]); // Adjust column name
-        setPhoneNumbers(phoneNumbers); // Store the phone numbers locally
-        onPhoneNumbersLoaded(phoneNumbers); // Pass the phone numbers to parent component
+          setPhoneNumbers(phoneNumbers);
+          onPhoneNumbersLoaded(phoneNumbers);
+          setStatus("success");
+        } catch (error) {
+          setStatus("error");
+          setErrorMessage(error.message || "Error processing the Excel file");
+        }
       };
       reader.readAsBinaryString(file);
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage("Error reading the file");
+    }
+  };
+
+  const getButtonText = () => {
+    switch (status) {
+      case "loading":
+        return "Processing...";
+      case "success":
+        return `File processed: ${fileName}`;
+      case "error":
+        return errorMessage || "Upload Failed";
+      default:
+        return fileName ? `File selected: ${fileName}` : "Upload Excel";
     }
   };
 
   return (
     <div className="upload-excel">
-      <label htmlFor="fileUpload" className="upload-button">
-        {fileName ? `File selected: ${fileName}` : "Upload Excel"}
+      <label
+        htmlFor="fileUpload"
+        className={`upload-button ${status}`}
+        data-has-file={!!fileName}
+      >
+        {getButtonText()}
       </label>
       <input
         type="file"
@@ -39,7 +81,7 @@ const UploadExcel = ({ onPhoneNumbersLoaded }) => {
         id="fileUpload"
         className="file-input"
         onChange={handleFileUpload}
-        hidden
+        disabled={status === "loading"}
       />
     </div>
   );

@@ -4,6 +4,7 @@ import "./MessageSettings.css";
 const MessageSettings = ({ onTimeGapChange }) => {
   const [timeGapSeconds, setTimeGapSeconds] = useState(1); // Default: 1 second
   const [error, setError] = useState(""); // Error message state
+  const [status, setStatus] = useState("idle"); // idle, loading, success, error
   const [isChecked, setIsChecked] = useState({
     attachments: false,
     unsubscribe: false,
@@ -20,6 +21,7 @@ const MessageSettings = ({ onTimeGapChange }) => {
       onTimeGapChange(timeGap * 1000); // Convert seconds to milliseconds
     } else {
       setError("Please enter a valid positive integer greater than or equal to 1.");
+      setStatus("error");
     }
   };
 
@@ -29,6 +31,19 @@ const MessageSettings = ({ onTimeGapChange }) => {
       ...prev,
       [name]: checked,
     }));
+  };
+
+  const handleSaveSettings = async () => {
+    setStatus("loading");
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setStatus("success");
+      setTimeout(() => setStatus("idle"), 2000);
+    } catch (error) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 2000);
+    }
   };
 
   return (
@@ -74,7 +89,7 @@ const MessageSettings = ({ onTimeGapChange }) => {
         </label>
       </div>
       
-      <div>
+      <div className="time-gap-input">
         <label>
           Time Gap (seconds):{" "}
           <input
@@ -87,13 +102,20 @@ const MessageSettings = ({ onTimeGapChange }) => {
           />
         </label>
         <div id="timeGapTooltip" className="tooltip">
-          (Time gap in seconds)
+          Time between messages
         </div>
-        {error && <p className="error-message">{error}</p>}
       </div>
+      {error && <p className="error-message">{error}</p>}
 
-      <button disabled={timeGapSeconds < 1 || isChecked.attachments || isChecked.unsubscribe}>
-        Save Settings
+      <button 
+        className={status}
+        onClick={handleSaveSettings}
+        disabled={timeGapSeconds < 1 || status === "loading"}
+      >
+        {status === "loading" ? "Saving..." : 
+         status === "success" ? "Settings Saved!" : 
+         status === "error" ? "Error Saving" : 
+         "Save Settings"}
       </button>
     </div>
   );
